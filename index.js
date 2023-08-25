@@ -106,7 +106,7 @@ function addDepartment() {
         name: 'department_name',
         message: 'What is the name of the department you want to add?',
         validate: department_name => {
-          if(!department_name){
+          if (!department_name) {
             return 'Required to type a department name'
           } else {
             return true;
@@ -127,4 +127,64 @@ function addDepartment() {
         initPropmt();
       });
     });
+};
+
+// Add Role
+function addRole() {
+  // Fetch department names from the database
+  const departmentSql = 'SELECT * FROM department';
+  db.query(departmentSql, (err, departmentResult) => {
+    if (err) throw err;
+
+    const depChoice = departmentResult.map(department => ({
+      name: department.department_name,
+      value: department.id,
+    }));
+
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'title',
+          message: 'What is the name of the role you want to add?',
+          validate: title => {
+            if (!title) {
+              return 'Required to type a role'
+            } else {
+              return true;
+            }
+          }
+        },
+        {
+          type: 'input',
+          name: 'salary',
+          message: 'What is the salary of the role?',
+          validate: salary => {
+            if (!salary) {
+              return 'Required to type a salary'
+            } else {
+              return true;
+            }
+          }
+        },
+        {
+          type: 'list',
+          name: 'department_id',
+          message: 'Which department does the role belong to?',
+          choices: depChoice,
+        },
+      ])
+      .then((answers) => {
+        const sql = `INSERT INTO role (role.title, role.salary, role.department_id)
+                     VALUES (?, ?, ?)`;
+
+        const params = [answers.title, answers.salary, answers.department_id];
+
+        db.query(sql, params, (err, result) => {
+          if (err) throw err;
+          console.log('Successfully added ' + answers.title + ' to the database');
+          initPropmt();
+        });
+      });
+  });
 };
