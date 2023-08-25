@@ -56,3 +56,14 @@ function initPropmt() {
       }
     })
 };
+
+// View All Departments
+function viewAllDepartments() {
+  const sql = `SELECT * FROM department`;
+
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    initPropmt();
+  });
+};
