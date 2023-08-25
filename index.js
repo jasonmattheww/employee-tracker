@@ -1,6 +1,23 @@
 // Import packages
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
+
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'employee_db'
+  },
+);
+
+// Connects db and checks for errors
+db.connect((err) => {
+  if (err) throw err;
+  initPropmt();
+});
+
 
 // To initialize prompt
 function initPropmt() {
