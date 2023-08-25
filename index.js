@@ -89,10 +89,42 @@ function viewAllEmployees() {
                LEFT JOIN role ON employee.role_id = role.id
                LEFT JOIN department ON role.department_id = department.id
                LEFT JOIN employee AS manager ON employee.manager_id = manager.id`;
-               
+
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.table(result);
     initPropmt();
   });
+};
+
+// Add Department
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'department_name',
+        message: 'What is the name of the department you want to add?',
+        validate: department_name => {
+          if(!department_name){
+            return 'Required to type a department name'
+          } else {
+            return true;
+          }
+        }
+      }
+    ])
+    .then((answers) => {
+
+      const sql = `INSERT INTO department (department_name)
+                   VALUES (?)`;
+
+      const params = [answers.department_name];
+
+      db.query(sql, params, (err, result) => {
+        if (err) throw err;
+        console.log('Successfully added ' + answers.department_name + ' to the database');
+        initPropmt();
+      });
+    });
 };
