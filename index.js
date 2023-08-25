@@ -67,3 +67,16 @@ function viewAllDepartments() {
     initPropmt();
   });
 };
+
+// View All Roles
+function viewAllRoles() {
+  const sql = `SELECT role.id, role.title, department.department_name AS department, role.salary
+               FROM role
+               LEFT JOIN department ON role.department_id = department.id`;
+
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    initPropmt();
+  });
+};
