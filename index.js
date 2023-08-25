@@ -99,6 +99,7 @@ function viewAllEmployees() {
 
 // Add Department
 function addDepartment() {
+  // Call prompt
   inquirer
     .prompt([
       {
@@ -114,8 +115,8 @@ function addDepartment() {
         }
       }
     ])
+    // Display results
     .then((answers) => {
-
       const sql = `INSERT INTO department (department_name)
                    VALUES (?)`;
 
@@ -141,6 +142,7 @@ function addRole() {
       value: department.id,
     }));
 
+    // Call prompt
     inquirer
       .prompt([
         {
@@ -174,6 +176,7 @@ function addRole() {
           choices: depChoice,
         },
       ])
+      // Display results
       .then((answers) => {
         const sql = `INSERT INTO role (role.title, role.salary, role.department_id)
                      VALUES (?, ?, ?)`;
@@ -186,5 +189,84 @@ function addRole() {
           initPropmt();
         });
       });
+  });
+};
+
+// Add Employee
+function addEmployee() {
+  // Fetch role and employee names from the database
+  const roleSql = 'SELECT id, title FROM role';
+  const managerSql = 'SELECT id, first_name, last_name FROM employee';
+
+  db.query(roleSql, (err, roleResult) => {
+    if (err) throw err;
+
+    db.query(managerSql, (err, managerResult) => {
+      if (err) throw err;
+
+      const roleChoice = roleResult.map(role => ({
+        name: role.title,
+        value: role.id,
+      }));
+
+      const managerChoice = managerResult.map(employee => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+      }));
+
+      // Call prompt
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'first_name',
+            message: `What is the employee's' first name?`,
+            validate: first_name => {
+              if (!first_name) {
+                return 'Required to type a first name'
+              } else {
+                return true;
+              }
+            }
+          },
+          {
+            type: 'input',
+            name: 'last_name',
+            message: `What is the employee's' last name?`,
+            validate: last_name => {
+              if (!last_name) {
+                return 'Required to type a last name'
+              } else {
+                return true;
+              }
+            }
+          },
+          {
+            type: 'list',
+            name: 'role_id',
+            message: `What is the employee's' role?`,
+            choices: roleChoice,
+          },
+          {
+            type: 'list',
+            name: 'manager_id',
+            message: `Who is the employee's manager?`,
+            choices: managerChoice,
+          },
+        ])
+        // Display results
+        .then((answers) => {
+          const sql = `INSERT INTO employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id)
+                   VALUES (?, ?, ?, ?)`;
+
+          const params = [answers.first_name, answers.last_name, answers.role_id, answers.manager_id];
+
+          db.query(sql, params, (err, result) => {
+            if (err) throw err;
+            console.log('Successfully added ' + answers.first_name + ' ' + answers.last_name + ' to the database');
+            initPropmt();
+          });
+        });
+    });
   });
 };
