@@ -274,3 +274,63 @@ function addEmployee() {
     });
   });
 };
+
+// Update employee role
+function updateEmployeeRole() {
+  // Fetch employee names from the database
+  const employeeSql = 'SELECT id, first_name, last_name FROM employee';
+
+  db.query(employeeSql, (err, employeeResult) => {
+    if (err) throw err;
+
+    const employeeChoices = employeeResult.map(employee => ({
+      name: `${employee.first_name} ${employee.last_name}`,
+      value: `${employee.first_name},${employee.last_name}`,
+    }));
+
+    // Fetch role names and IDs from the database
+    const roleSql = 'SELECT id, title FROM role';
+
+    db.query(roleSql, (err, roleResult) => {
+      if (err) throw err;
+
+      const roleChoices = roleResult.map(role => ({
+        name: role.title,
+        value: role.id,
+      }));
+
+      // Call prompt
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'employee_name',
+            message: `Which employee's role do you want to update?`,
+            choices: employeeChoices,
+          },
+          {
+            type: 'list',
+            name: 'role_id',
+            message: 'Which role do you want to assign to the selected employee?',
+            choices: roleChoices,
+          }
+        ])
+        // Display results
+        .then((answers) => {
+          const [first_name, last_name] = answers.employee_name.split(',');
+
+          const sql = `UPDATE employee 
+                       SET role_id = ?
+                       WHERE first_name = ? AND last_name = ?`;
+
+          const params = [answers.role_id, first_name, last_name];
+
+          db.query(sql, params, (err, result) => {
+            if (err) throw err;
+            console.log(`Successfully updated employee's role`);
+            initPrompt();
+          });
+        });
+    });
+  });
+};
