@@ -15,19 +15,19 @@ const db = mysql.createConnection(
 // Connects db and checks for errors
 db.connect((err) => {
   if (err) throw err;
-  initPropmt();
+  initPrompt();
 });
 
 
 // To initialize prompt
-function initPropmt() {
+function initPrompt() {
   inquirer
     .prompt([
       {
         type: 'list',
         name: 'menu',
         message: 'What would you like to do?',
-        choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role'],
+        choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit'],
       }
     ])
     .then((answers) => {
@@ -53,6 +53,10 @@ function initPropmt() {
         case 'Update Employee Role':
           updateEmployeeRole();
           break;
+        case 'Exit':
+          console.log('Goodbye!');
+          db.end();
+          break;    
       }
     })
 };
@@ -64,7 +68,7 @@ function viewAllDepartments() {
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.table(result);
-    initPropmt();
+    initPrompt();
   });
 };
 
@@ -77,7 +81,7 @@ function viewAllRoles() {
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.table(result);
-    initPropmt();
+    initPrompt();
   });
 };
 
@@ -93,7 +97,7 @@ function viewAllEmployees() {
   db.query(sql, (err, result) => {
     if (err) throw err;
     console.table(result);
-    initPropmt();
+    initPrompt();
   });
 };
 
@@ -125,7 +129,7 @@ function addDepartment() {
       db.query(sql, params, (err, result) => {
         if (err) throw err;
         console.log('Successfully added ' + answers.department_name + ' to the database');
-        initPropmt();
+        initPrompt();
       });
     });
 };
@@ -186,7 +190,7 @@ function addRole() {
         db.query(sql, params, (err, result) => {
           if (err) throw err;
           console.log('Successfully added ' + answers.title + ' to the database');
-          initPropmt();
+          initPrompt();
         });
       });
   });
@@ -264,7 +268,7 @@ function addEmployee() {
           db.query(sql, params, (err, result) => {
             if (err) throw err;
             console.log('Successfully added ' + answers.first_name + ' ' + answers.last_name + ' to the database');
-            initPropmt();
+            initPrompt();
           });
         });
     });
