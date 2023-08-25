@@ -6,7 +6,9 @@ const inquirer = require('inquirer');
 const db = mysql.createConnection(
   {
     host: 'localhost',
+    // MySQL username
     user: 'root',
+    // Add MySQL password here
     password: '',
     database: 'employee_db'
   },
