@@ -2,6 +2,8 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
+require('dotenv').config()
+
 // Connect to database
 const db = mysql.createConnection(
   {
@@ -9,7 +11,7 @@ const db = mysql.createConnection(
     // MySQL username
     user: 'root',
     // Add MySQL password here
-    password: '',
+    password: process.env.DB_PASSWORD,
     database: 'employee_db'
   },
 );
