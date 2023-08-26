@@ -2,7 +2,7 @@
 
 ## Description
 
-With using mysql and inquirer you're able to answer questions from the terminal and save your answers to the employee database. With the questions you are provided you can view all departments, roles, emplopyees, add departments, add roles, plus many more. Then from the information provided it will be stored into the database.
+With using MySQL and Inquirer you're able to answer questions from the terminal and save your answers to the employee database. With the questions you are provided, you can view all departments, roles, employees, add departments, add roles, plus many more. Then from the information provided it will be stored in the database.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ npm i
 
 ## Usage
 ```
-1. Start mysql
+1. Start MySQL
 ```
 ![](./images/start-mysql.png)
 ```
